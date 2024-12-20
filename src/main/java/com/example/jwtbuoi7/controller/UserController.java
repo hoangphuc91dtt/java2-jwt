@@ -46,9 +46,15 @@ public class UserController {
 
     @PostMapping("/addNewUser")
     public String addNewUser(@RequestBody UserInfo userInfo) {
+        // Kiểm tra xem email đã tồn tại trong database hay chưa
+        if (service.isEmailExist(userInfo.getEmail())) {
+            return "Email is already exist";
+        }
+
         if (userInfo.getRoles() == null || userInfo.getRoles().isEmpty()) {
             userInfo.setRoles("ROLE_USER");
         }
+
         return service.addUser(userInfo);
     }
 
