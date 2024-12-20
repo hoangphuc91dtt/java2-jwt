@@ -2,6 +2,7 @@ package com.example.jwtbuoi7.controller;
 
 import com.example.jwtbuoi7.entity.AuthRequest;
 import com.example.jwtbuoi7.entity.UserInfo;
+import com.example.jwtbuoi7.repository.UserInfoRepository;
 import com.example.jwtbuoi7.service.JwtService;
 import com.example.jwtbuoi7.service.UserInfoDetails;
 import com.example.jwtbuoi7.service.UserInfoService;
@@ -13,6 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -42,7 +46,21 @@ public class UserController {
 
     @PostMapping("/addNewUser")
     public String addNewUser(@RequestBody UserInfo userInfo) {
+        if (userInfo.getRoles() == null || userInfo.getRoles().isEmpty()) {
+            userInfo.setRoles("ROLE_USER");
+        }
         return service.addUser(userInfo);
+    }
+
+    @GetMapping("/getAllUserDetails")
+    public List<UserInfoDetails> getAllUserDetails() {
+        // Lấy danh sách tất cả người dùng từ repository
+        List<UserInfo> userList = service.getAllUser();
+
+        // Chuyển đổi danh sách UserInfo sang danh sách UserInfoDetails
+        return userList.stream()
+                .map(UserInfoDetails::new) // Tạo đối tượng UserInfoDetails từ UserInfo
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/user/userProfile")
