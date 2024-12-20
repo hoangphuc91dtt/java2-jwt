@@ -3,6 +3,7 @@ package com.example.jwtbuoi7.service;
 import com.example.jwtbuoi7.entity.UserInfo;
 import com.example.jwtbuoi7.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,6 +35,12 @@ public class UserInfoService implements UserDetailsService {
         return repository.findAll(); // Lấy tất cả người dùng từ repository
     }
 
+
+    public UserInfo getUserProfile() {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        return repository.findByEmail(currentUsername)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + currentUsername));
+    }
 
     public String addUser(UserInfo userInfo) {
         // Encode password before saving the user

@@ -65,9 +65,11 @@ public class UserController {
 
     @GetMapping("/user/userProfile")
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public String userProfile() {
-        return "Welcome to User Profile";
+    public UserInfo userProfile() {
+        // Gọi service để lấy thông tin người dùng hiện tại
+        return service.getUserProfile();
     }
+
 
     @GetMapping("/admin/adminProfile")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
