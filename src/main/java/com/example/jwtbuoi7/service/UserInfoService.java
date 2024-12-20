@@ -48,4 +48,8 @@ public class UserInfoService implements UserDetailsService {
         repository.save(userInfo);
         return "User Added Successfully";
     }
+
+    public boolean isEmailExist(String email) {
+        return repository.findByEmail(email).isPresent();
+    }
 }
